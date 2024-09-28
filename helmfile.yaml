@@ -1,0 +1,13 @@
+helmDefaults:
+  atomic: true
+  wait: true
+  createNamespace: false
+
+releases:
+  - name: '{{ env "RELEASE_NAME" | default "md2notion-api" }}'
+    namespace: md2notion-api
+    chart: ./chart
+    values:
+      - image: registry.l4rs.net/md2notion-api:latest
+      - ingress:
+          url: md2notion.hilars.dev

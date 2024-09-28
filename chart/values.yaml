@@ -1,0 +1,12 @@
+image: registry.l4rs.net/md2notion-api:latest
+replicaCount: 1
+resources:
+  limits:
+    memory: "2048Mi"
+    cpu: "3"
+  requests:
+    memory: "64Mi"
+    cpu: "5m"
+ingress:
+  url: md2notion.l4rs.dev
+  certClusterIssuer: "cf"

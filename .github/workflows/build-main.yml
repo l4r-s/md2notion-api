@@ -1,0 +1,68 @@
+name: Build Main
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  ###
+  # Image build
+  ###
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Docker Registry
+        uses: docker/login-action@v3
+        with:
+          registry: registry.l4rs.net
+          username: github
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: Dockerfile
+          push: true
+          platforms: linux/amd64
+          tags: |
+            registry.l4rs.net/md2notion-api:${{ github.sha }}
+            registry.l4rs.net/md2notion-api:latest
+
+      - name: Log out from Docker Registry
+        run: docker logout registry.l4rs.net
+
+
+  ###
+  # Deploy to Kubernetes
+  ###
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup helmfile
+        uses: mamezou-tech/setup-helmfile@v2.0.0
+
+      - name: Authenticate to Kubernetes cluster
+        run: |
+          echo ${{ secrets.K8S_SERVICE_ACCOUNT_TOKEN }} | kubectl config set-credentials github --token=$(cat -)
+          kubectl config set-cluster k8s-cluster --server=https://k8sp01.l4rs.net:6443 \
+            --certificate-authority=chart/k8sp01-ca.crt
+          kubectl config set-context md2notion-api --cluster=k8s-cluster --user=github
+          kubectl config use-context md2notion-api
+
+      - name: Deploy to Kubernetes using Helmfile
+        run: |
+          helmfile apply --set image=registry.l4rs.net/md2notion-api:${{ github.sha }}

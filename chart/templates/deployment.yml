@@ -1,0 +1,30 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: md2notion-api-{{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: md2notion-api-{{ .Release.Name }}
+    spec:
+      containers:
+        - name: md2notion-api
+          image: {{ .Values.image }}
+          ports:
+            - containerPort: 3000
+          resources:
+            limits:
+              memory: {{ .Values.resources.limits.memory }}
+              cpu: {{ .Values.resources.limits.cpu }}
+            requests:
+              memory: {{ .Values.resources.requests.memory }}
+              cpu: {{ .Values.resources.requests.cpu }}
+            initialDelaySeconds: 3
+            periodSeconds: 10

@@ -1,0 +1,6 @@
+apiVersion: v2
+name: md2notion-api
+description: A Helm chart for deploying the md2notion-api application
+type: application
+version: 0.1.0
+appVersion: "1.0"
