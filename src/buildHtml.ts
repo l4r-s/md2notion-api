@@ -5,6 +5,16 @@ import showdown from 'showdown';
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
 const readmePath = path.join(__dirname, '../README.md');
 const outputPath = path.join(__dirname, '../dist/index.html');
+const licensePath = path.join(__dirname, '../LICENSE');
+const distLicensePath = path.join(__dirname, '../dist/LICENSE');
+
+fs.copyFile(licensePath, distLicensePath, (err) => {
+    if (err) {
+        console.error('Error copying LICENSE file', err);
+        process.exit(1);
+    }
+    console.log('LICENSE file copied to dist directory');
+});
 
 const converter = new showdown.Converter({
     extensions: [

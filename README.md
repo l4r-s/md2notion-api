@@ -12,7 +12,7 @@ A hosted version of this API is available at [https://md2notion.hilars.dev](http
 
 You can use the hosted API by sending a `POST` request to:
 
-`https://md2notion.hilars.dev/api`
+`https://md2notion.hilars.dev/`
 
 **Example Request using `curl`:**
 
@@ -20,7 +20,7 @@ You can use the hosted API by sending a `POST` request to:
 curl -X POST \
   -H "Content-Type: application/json" \
   -d '{"md": "# Hello World\nThis is a test."}' \
-  https://md2notion.hilars.dev/api
+  https://md2notion.hilars.dev
 ```
 
 **Example Response:**
@@ -95,7 +95,7 @@ yarn install
 yarn dev
 ```
 
-The API will be running at `http://localhost:3000/api`.
+The API will be running at `http://localhost:3000`.
 
 ### Docker
 
